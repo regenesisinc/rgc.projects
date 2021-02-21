@@ -1,0 +1,23 @@
+# Test a role
+
+- name: TEST_THE_ROLE({{ target_role }})
+  hosts: localhost
+  connection: local
+
+  tasks:
+  - name: run_test
+    block:
+      - name: load_role({{ target_role }})
+        include_role:
+          name: "{{ target_role }}"
+    when: target_role is defined
+    rescue:
+      - name: usage_attention
+        ansible.builtin.debug:
+          msg: 'usage: ansible -e"target_role=<some-role>" roletest.yml'
+
+  - name: usage
+    ansible.builtin.debug:
+      msg: 'usage: ansible -e"target_role=<some-role>" roletest.yml'
+    when: target_role is not defined
+
